@@ -15,3 +15,14 @@ firebase.auth().onAuthStateChanged(function(newUser) {
     }
 
 });
+
+document.getElementById('saveProfile').addEventListener('click',
+function(ev) {
+    const db = firebase.firestore();
+    var docRef = db.collection('customers').doc(user.email);
+    docRef.set({
+        name: document.getElementById('customerName').value,
+        email: user.email,
+        phone: document.getElementById('customerPhone').value,
+    })
+})
