@@ -27,7 +27,7 @@ if (process.argv.length < 3) {
             if ((i + 1) % 500 === 0) {
                 console.log(`Writing record ${i + 1}`);
                 batchCommits.push(batch.commit());
-                batch.db.batch();
+                batch = db.batch();
             } 
         });
         batchCommits.push(batch.commit());
