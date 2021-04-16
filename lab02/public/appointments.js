@@ -25,6 +25,17 @@ getOpenTimes().forEach(time => {
   timeslots.add(new Option(formatDate(time), time));
 });
 
+document.getElementById('makeAppointment').addEventListener('click', function(ev) {
+  const millis = parseInt(timeslots.selectedOptions[0].value);
+  if (millis > 0) {
+    const db = firebase.firestore();
+    db.collection('customers').doc(user.email).collection('appointments').add({
+      time: millis
+    })
+    timeslots.remove(timeslots.selectedIndex);
+  }
+})
+
 function getOpenTimes() {
   const retVal = [];
   let startDate = new Date();
