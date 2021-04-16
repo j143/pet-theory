@@ -1,5 +1,17 @@
 const fs = require('fs');
 const faker = require('faker');
+const {Logging} = require('@google-cloud/logging');
+
+const logName = 'pet-theory-logs-createTestData';
+
+// Creates a Logging client
+const logging = new Logging();
+const log = logging.log(logName);
+
+const resource = {
+  // This example targets the "global" resource for simplicity
+  type: 'global',
+};
 
 function getRandomCustomerEmail(firstName, lastName) {
   const provider = faker.internet.domainName();
@@ -12,7 +24,7 @@ async function createTestData(recordCount) {
   var f = fs.createWriteStream(fileName);
   f.write('id,name,email,phone\n')
   for (let i=0; i<recordCount; i++) {
-    const id = faker.random.number();
+    const id = faker.datatype.number();
     const firstName = faker.name.firstName();
     const lastName = faker.name.lastName();
     const name = `${firstName} ${lastName}`;
@@ -21,6 +33,9 @@ async function createTestData(recordCount) {
     f.write(`${id},${name},${email},${phone}\n`);
   }
   console.log(`Created file ${fileName} containing ${recordCount} records.`);
+  success_message = `Success: importTestData - Wrote ${recordCount} records`
+  const entry = log.entry({resource: resource}, {message: `${success_message}`});
+  log.write([entry]);
 }
 
 recordCount = parseInt(process.argv[2]);
